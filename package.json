@@ -1,0 +1,24 @@
+{
+  "name": "Node_CheckGitRepos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Istani/Node_CheckGitRepos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Istani/Node_CheckGitRepos/issues"
+  },
+  "homepage": "https://github.com/Istani/Node_CheckGitRepos#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "request": "^2.88.0"
+  }
+}
