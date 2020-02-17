@@ -5,6 +5,8 @@ console.log(software);
 console.log("=".repeat(software.length));
 
 const fs = require("fs");
+const child_process = require("child_process");
+
 var envpath = __dirname + "/.env";
 var config = require("dotenv").config({ path: envpath });
 var config_example = "";
@@ -32,16 +34,17 @@ async function save_file(name, data) {
 
 async function get_repos() {
   const url = "https://api.github.com/users/" + process.env.Github_User + "/repos";
-  request(url, async function(error, response, body) {
+  console.log(url);
+  request(url, { headers: { "User-Agent": software } }, async function(error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
       var data = JSON.parse(body);
       await save_file(process.env.Github_User + "_repos", data);
+      process.chdir("../");
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
-        console.log(element);
-        return;
+        child_process.spawn("git", ["clone", element.clone_url]);
       }
     }
     setTimeout(get_repos, 1000 * 10);
