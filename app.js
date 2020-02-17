@@ -40,14 +40,16 @@ async function get_repos() {
       console.error("error:", error);
     } else {
       var data = JSON.parse(body);
+      process.chdir(__dirname);
       await save_file(process.env.Github_User + "_repos", data);
       process.chdir("../");
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
+        console.log(element.name);
         child_process.spawn("git", ["clone", element.clone_url]);
       }
     }
-    setTimeout(get_repos, 1000 * 10);
+    setTimeout(get_repos, 1000 * 60 * 60 * 24);
   });
 }
 get_repos();
