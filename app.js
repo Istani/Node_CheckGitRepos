@@ -47,7 +47,13 @@ async function get_repos() {
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
-        //child_process.spawn("git", ["clone", element.clone_url]);
+        await child_process.spawnSync("git", ["clone","--recursive", element.clone_url]);
+	process.chdir(element.name);
+	await child_process.spawnSync("git", ["checkout", "master"]);
+	await child_process.spawnSync("git", ["pull", "--all"]);
+	//await child_process.spawnSync("git", ["submodule", "init"]);
+	//await child_process.spawnSync("git", ["submodule", "update"]);
+	process.chdir("../");
       }
     }
     setTimeout(get_repos, 1000 * 60 * 60 * 24);
