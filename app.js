@@ -45,20 +45,19 @@ async function get_repos() {
       process.chdir(__dirname);
       await save_file(process.env.Github_User + "_repos", data);
       process.chdir("../");
-      console.log(process.cwd());
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
         await child_process.spawnSync("git", ["clone","--recursive", element.clone_url]);
-	process.chdir(element.name);
-	await child_process.spawnSync("git", ["checkout", "master"]);
-	await child_process.spawnSync("git", ["pull", "--all"]);
-	await child_process.spawnSync("git", ["add", "."]);
-	await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
-	await child_process.spawnSync("git", ["push", "--all"]);
-	//await child_process.spawnSync("git", ["submodule", "init"]);
-	//await child_process.spawnSync("git", ["submodule", "update"]);
-	process.chdir("../");
+        process.chdir(element.name);
+        await child_process.spawnSync("git", ["checkout", "master"]);
+        await child_process.spawnSync("git", ["pull", "--all"]);
+        await child_process.spawnSync("git", ["add", "."]);
+        await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
+        await child_process.spawnSync("git", ["push", "--all"]);
+        //await child_process.spawnSync("git", ["submodule", "init"]);
+        //await child_process.spawnSync("git", ["submodule", "update"]);
+        process.chdir("../");
       }
     }
     setTimeout(() => {
