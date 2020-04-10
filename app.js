@@ -59,7 +59,9 @@ async function get_repos() {
 	process.chdir("../");
       }
     }
-    setTimeout(get_repos, 1000 * 60 * 60 * 24);
+    setTimeout(() => {
+	process.exit(0);
+    }, 1000 * 60 * 60 * 24);
   });
 }
 get_repos();
