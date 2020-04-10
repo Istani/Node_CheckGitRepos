@@ -33,9 +33,11 @@ async function save_file(name, data) {
 }
 
 async function get_repos() {
+  await fork_all();
   const url = "https://api.github.com/users/" + process.env.Github_User + "/repos";
   console.log(url);
-  request(url, { headers: { "User-Agent": software } }, async function(error, response, body) {
+
+  request(url, { headers: { "User-Agent": software, authorization: "token "+process.env.Github_Token  } }, async function (error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
@@ -53,3 +55,45 @@ async function get_repos() {
   });
 }
 get_repos();
+
+async function fork_all() {
+  const url = "https://api.github.com/user/orgs";
+  console.log(url);
+  request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+    if (error) {
+      console.error("error:", error);
+    } else {
+      var data = JSON.parse(body);
+      process.chdir(__dirname);
+      await save_file(process.env.Github_User + "_orgs", data);
+      for (let data_index = 0; data_index < data.length; data_index++) {
+        const element = data[data_index];
+        await ForkAll(element.repos_url, element.login);
+      }
+    }
+  });
+}
+async function ForkAll(url, company_name="") {
+ request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+    if (error) {
+      console.error("error:", error);
+    } else {
+      var data = JSON.parse(body);
+      await save_file(company_name + "_repos", data);
+      for (let data_index = 0; data_index < data.length; data_index++) {
+        const element = data[data_index];
+        await ForkUrl(element.forks_url);
+      }
+    }
+  });
+}
+async function ForkUrl(url) {
+  request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+    if (error) {
+      console.error("error:", error);
+    } else {
+      var data = JSON.parse(body);
+      console.log(url);
+    }
+  });
+}
