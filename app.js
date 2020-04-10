@@ -51,6 +51,9 @@ async function get_repos() {
 	process.chdir(element.name);
 	await child_process.spawnSync("git", ["checkout", "master"]);
 	await child_process.spawnSync("git", ["pull", "--all"]);
+	await child_process.spawnSync("git", ["add", "."]);
+	await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
+	await child_process.spawnSync("git", ["push", "--all"]);
 	//await child_process.spawnSync("git", ["submodule", "init"]);
 	//await child_process.spawnSync("git", ["submodule", "update"]);
 	process.chdir("../");
