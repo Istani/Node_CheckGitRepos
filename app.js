@@ -33,7 +33,6 @@ async function save_file(name, data) {
 }
 
 async function get_repos() {
-  await fork_all();
   const url = "https://api.github.com/users/" + process.env.Github_User + "/repos";
   console.log(url);
 
@@ -60,6 +59,7 @@ async function get_repos() {
         process.chdir("../");
       }
     }
+    await fork_all();
     setTimeout(() => {
       process.exit(0);
     }, 1000 * 60 * 60 * 24);
@@ -91,6 +91,7 @@ async function ForkAll(url, company_name = "") {
       console.error("error:", error);
     } else {
       var data = JSON.parse(body);
+      process.chdir(__dirname);
       await save_file(company_name + "_repos", data);
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
