@@ -37,7 +37,7 @@ async function get_repos() {
   const url = "https://api.github.com/users/" + process.env.Github_User + "/repos";
   console.log(url);
 
-  request(url, { headers: { "User-Agent": software, authorization: "token "+process.env.Github_Token  } }, async function (error, response, body) {
+  request(url, { headers: { "User-Agent": software, authorization: "token " + process.env.Github_Token } }, async function (error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
@@ -48,7 +48,7 @@ async function get_repos() {
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
-        await child_process.spawnSync("git", ["clone","--recursive", element.clone_url]);
+        await child_process.spawnSync("git", ["clone", "--recursive", element.clone_url]);
         process.chdir(element.name);
         await child_process.spawnSync("git", ["checkout", "master"]);
         await child_process.spawnSync("git", ["pull", "--all"]);
@@ -61,7 +61,7 @@ async function get_repos() {
       }
     }
     setTimeout(() => {
-	process.exit(0);
+      process.exit(0);
     }, 1000 * 60 * 60 * 24);
   });
 }
@@ -70,7 +70,7 @@ get_repos();
 async function fork_all() {
   const url = "https://api.github.com/user/orgs";
   console.log(url);
-  request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+  request(url, { headers: { "User-Agent": software, authorization: "token " + process.env.Github_Token } }, async function (error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
@@ -84,8 +84,9 @@ async function fork_all() {
     }
   });
 }
-async function ForkAll(url, company_name="") {
- request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+async function ForkAll(url, company_name = "") {
+  console.log(url);
+  request(url, { headers: { "User-Agent": software, authorization: "token " + process.env.Github_Token } }, async function (error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
@@ -99,7 +100,8 @@ async function ForkAll(url, company_name="") {
   });
 }
 async function ForkUrl(url) {
-  request(url, { headers: { "User-Agent": software , authorization: "token "+process.env.Github_Token } }, async function (error, response, body) {
+  console.log(url);
+  request(url, { headers: { "User-Agent": software, authorization: "token " + process.env.Github_Token } }, async function (error, response, body) {
     if (error) {
       console.error("error:", error);
     } else {
