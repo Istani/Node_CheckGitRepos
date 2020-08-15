@@ -6,6 +6,8 @@ console.log("=".repeat(software.length));
 
 const fs = require("fs");
 const child_process = require("child_process");
+var spawn = require('child_process').spawnSync;
+var exec = require('child_process').execSync;
 
 var envpath = __dirname + "/.env";
 var config = require("dotenv").config({ path: envpath });
@@ -47,7 +49,7 @@ async function get_repos() {
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
-        await child_process.spawnSync("git", ["clone", "--recursive", element.clone_url]);
+	await spawn('git', ['clone', '--recursive', element.clone_url], { stdio: 'inherit' });
         await use_commands(element.name);
       }
     }
@@ -121,15 +123,18 @@ list_dir();
 
 async function use_commands(path) {
   process.chdir(path);
-  console.log(process.cwd());
-  await child_process.spawnSync("git", ["checkout", "master"]);
-  await child_process.spawnSync("git", ["pull", "--all"]);
-  await child_process.spawnSync("git", ["add", "."]);
-  await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
-  //await child_process.spawnSync("git", ["push", "--all"]);
-  // git remote | xargs -L1 git push --all
-  await child_process.spawnSync("git", ["remote", "|", "xargs", "-L1", "git", "push", "--all"]);
-  //await child_process.spawnSync("git", ["submodule", "init"]);
-  //await child_process.spawnSync("git", ["submodule", "update"]);
+  try {
+    console.log(process.cwd());
+    await spawn('git', ['checkout', 'master'], { stdio: 'inherit' });
+    await spawn('git', ['pull', '--all'], { stdio: 'inherit' });
+    await spawn('git', ['add', '.'], { stdio: 'inherit' });
+    await spawn('git', ['commit', '-m', "'Backup Sync'"], { stdio: 'inherit' });
+    // git remote | xargs -L1 git push --all
+    await exec("git remote | xargs -L1 git push --all", function(error, stdout, stderr) {
+      console.log(stdout);
+    });
+  } catch (e) {
+    console.error(e);
+  }
   process.chdir("../");
 }
