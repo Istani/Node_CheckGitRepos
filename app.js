@@ -54,12 +54,13 @@ async function get_repos() {
       }
     }
     await fork_all();
+    await list_dir();
     setTimeout(() => {
       process.exit(0);
     }, 1000 * 60 * 60 * 24);
   });
 }
-//get_repos();
+get_repos();
 
 async function fork_all() {
   const url = "https://api.github.com/user/orgs";
@@ -119,7 +120,7 @@ async function list_dir() {
   process.chdir(__dirname);
   console.log("List DIR done");
 }
-list_dir();
+//list_dir();
 
 async function use_commands(path) {
   process.chdir(path);
@@ -127,6 +128,9 @@ async function use_commands(path) {
     console.log(process.cwd());
     await spawn('git', ['checkout', 'master'], { stdio: 'inherit' });
     await spawn('git', ['pull', '--all'], { stdio: 'inherit' });
+    //await exec("git pull bitbucket master", function(error, stdout, stderr) {
+    //  console.log(stdout);
+    //});
     await spawn('git', ['add', '.'], { stdio: 'inherit' });
     await spawn('git', ['commit', '-m', "'Backup Sync'"], { stdio: 'inherit' });
     // git remote | xargs -L1 git push --all
