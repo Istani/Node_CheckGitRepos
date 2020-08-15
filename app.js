@@ -105,13 +105,16 @@ async function ForkUrl(url) {
 }
 
 async function list_dir() {
-  var files = fs.readdirSync(__dirname);
+  process.chdir("../");
+  var path = process.cwd()+"/";
+  var files = fs.readdirSync(path);
   for(var i in files) {
     if (fs.lstatSync(path + files[i]).isDirectory()==true) {
       console.log("Next DIR: " + (path + files[i]));
-      await use_commands(__dirname + files[i] + "/");
+      await use_commands(path + files[i] + "/");
     }
   }
+  process.chdir(__dirname);
 }
 list_dir();
 
