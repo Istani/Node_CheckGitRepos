@@ -48,17 +48,7 @@ async function get_repos() {
         const element = data[data_index];
         console.log(element.name);
         await child_process.spawnSync("git", ["clone", "--recursive", element.clone_url]);
-        process.chdir(element.name);
-        await child_process.spawnSync("git", ["checkout", "master"]);
-        await child_process.spawnSync("git", ["pull", "--all"]);
-        await child_process.spawnSync("git", ["add", "."]);
-        await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
-        //await child_process.spawnSync("git", ["push", "--all"]);
-        // git remote | xargs -L1 git push --all
-	await child_process.spawnSync("git", ["remote", "|", "xargs", "-L1", "git", "push", "--all"]);
-        //await child_process.spawnSync("git", ["submodule", "init"]);
-        //await child_process.spawnSync("git", ["submodule", "update"]);
-        process.chdir("../");
+        await use_commands(element.name);
       }
     }
     await fork_all();
@@ -67,7 +57,7 @@ async function get_repos() {
     }, 1000 * 60 * 60 * 24);
   });
 }
-get_repos();
+//get_repos();
 
 async function fork_all() {
   const url = "https://api.github.com/user/orgs";
@@ -112,4 +102,29 @@ async function ForkUrl(url) {
       console.log(url);
     }
   });
+}
+
+async function list_dir() {
+  var files = fs.readdirSync(__dirname);
+  for(var i in files) {
+    if (fs.lstatSync(path + files[i]).isDirectory()==true) {
+      console.log("Next DIR: " + (path + files[i]));
+      await use_commands(__dirname + files[i] + "/");
+    }
+  }
+}
+list_dir();
+
+async function use_commands(path) {
+  process.chdir(path);
+  await child_process.spawnSync("git", ["checkout", "master"]);
+  await child_process.spawnSync("git", ["pull", "--all"]);
+  await child_process.spawnSync("git", ["add", "."]);
+  await child_process.spawnSync("git", ["commit", "-m", "'Backup Sync'"]);
+  //await child_process.spawnSync("git", ["push", "--all"]);
+  // git remote | xargs -L1 git push --all
+  await child_process.spawnSync("git", ["remote", "|", "xargs", "-L1", "git", "push", "--all"]);
+  //await child_process.spawnSync("git", ["submodule", "init"]);
+  //await child_process.spawnSync("git", ["submodule", "update"]);
+  process.chdir("../");
 }
