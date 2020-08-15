@@ -115,11 +115,13 @@ async function list_dir() {
     }
   }
   process.chdir(__dirname);
+  console.log("List DIR done");
 }
 list_dir();
 
 async function use_commands(path) {
   process.chdir(path);
+  console.log(process.cwd());
   await child_process.spawnSync("git", ["checkout", "master"]);
   await child_process.spawnSync("git", ["pull", "--all"]);
   await child_process.spawnSync("git", ["add", "."]);
