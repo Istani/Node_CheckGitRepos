@@ -52,9 +52,10 @@ async function get_repos() {
 	      await spawn('git', ['clone', '--recursive', element.clone_url], { stdio: 'inherit' });
         await use_commands(element.name, element.clone_url);
       }
+      await fork_all();
+      await list_dir();
     }
-    await fork_all();
-    await list_dir();
+    
     setTimeout(() => {
       process.exit(0);
     }, 1000 * 60 * 60 * 24);
@@ -115,7 +116,7 @@ async function list_dir() {
   for(var i in files) {
     if (fs.lstatSync(path + files[i]).isDirectory()==true) {
       console.log("Next DIR: " + (path + files[i]));
-      await use_commands(path + files[i] + "/");
+      await use_commands(path + files[i] + "/","");
     }
   }
   process.chdir(__dirname);
@@ -124,12 +125,14 @@ async function list_dir() {
 //list_dir();
 
 async function use_commands(path, url) {
-  console.log(path);
+  //console.log(path);
   process.chdir(path);
   try {
     console.log(process.cwd());
-    await spawn('git', ['remote', 'set-url', 'origin', url], { stdio: 'inherit' });
-
+    if (url!="") {
+      console.log(url);
+      await spawn('git', ['remote', 'set-url', 'origin', url], { stdio: 'inherit' });
+    }
     await spawn('git', ['checkout', 'master'], { stdio: 'inherit' });
     await spawn('git', ['pull', '--all'], { stdio: 'inherit' });
     //await exec("git pull bitbucket master", function(error, stdout, stderr) {
