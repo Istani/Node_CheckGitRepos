@@ -49,11 +49,11 @@ async function get_repos() {
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
-	      await spawn('git', ['clone', '--recursive', element.clone_url], { stdio: 'inherit' });
-        await use_commands(element.name, element.clone_url);
+	      await spawn('git', ['clone', '--recursive', element.ssh_url], { stdio: 'inherit' });
+        await use_commands(element.name, element.ssh_url);
       }
       await fork_all();
-      await list_dir();
+      //await list_dir();
     }
     
     setTimeout(() => {
