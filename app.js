@@ -49,8 +49,8 @@ async function get_repos() {
       for (let data_index = 0; data_index < data.length; data_index++) {
         const element = data[data_index];
         console.log(element.name);
-	await spawn('git', ['clone', '--recursive', element.clone_url], { stdio: 'inherit' });
-        await use_commands(element.name);
+	      await spawn('git', ['clone', '--recursive', element.clone_url], { stdio: 'inherit' });
+        await use_commands(element.name, element.clone_url);
       }
     }
     await fork_all();
@@ -108,6 +108,7 @@ async function ForkUrl(url) {
 }
 
 async function list_dir() {
+  process.chdir(__dirname);
   process.chdir("../");
   var path = process.cwd()+"/";
   var files = fs.readdirSync(path);
@@ -122,10 +123,13 @@ async function list_dir() {
 }
 //list_dir();
 
-async function use_commands(path) {
+async function use_commands(path, url) {
+  console.log(path);
   process.chdir(path);
   try {
     console.log(process.cwd());
+    await spawn('git', ['remote', 'set-url', 'origin', url], { stdio: 'inherit' });
+
     await spawn('git', ['checkout', 'master'], { stdio: 'inherit' });
     await spawn('git', ['pull', '--all'], { stdio: 'inherit' });
     //await exec("git pull bitbucket master", function(error, stdout, stderr) {
