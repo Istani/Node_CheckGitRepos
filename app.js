@@ -53,7 +53,7 @@ async function get_repos() {
         await use_commands(element.name, element.ssh_url);
       }
       await fork_all();
-      //await list_dir();
+      await list_dir();
     }
     
     setTimeout(() => {
