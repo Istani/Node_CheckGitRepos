@@ -133,7 +133,10 @@ async function use_commands(path, url) {
       console.log(url);
       await spawn('git', ['remote', 'set-url', 'origin', url], { stdio: 'inherit' });
     }
+    
     await spawn('git', ['checkout', 'master'], { stdio: 'inherit' });
+    await spawn('git', ['checkout', 'main'], { stdio: 'inherit' });
+
     await spawn('git', ['pull', '--all'], { stdio: 'inherit' });
     //await exec("git pull bitbucket master", function(error, stdout, stderr) {
     //  console.log(stdout);
